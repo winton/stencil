@@ -1,14 +1,14 @@
-GEM_NAME = 'gem_template'
+GEM_NAME = 'stencil'
 GEM_FILES = FileList['**/*'] - FileList['coverage', 'coverage/**/*', 'pkg', 'pkg/**/*']
 GEM_SPEC = Gem::Specification.new do |s|
   # == CONFIGURE ==
   s.author = "Winton Welsh"
   s.email = "mail@wintoni.us"
   s.homepage = "http://github.com/winton/#{GEM_NAME}"
-  s.summary = ""
+  s.summary = "Project template manager"
   # == CONFIGURE ==
+  s.add_dependency('httparty', '=0.4.5')
   s.executables << GEM_NAME
-  s.extensions  << "install"
   s.extra_rdoc_files = [ "README.markdown" ]
   s.files = GEM_FILES.to_a
   s.has_rdoc = false
