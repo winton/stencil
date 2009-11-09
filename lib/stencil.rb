@@ -16,8 +16,8 @@ class Stencil
     elsif Config.exists?(:projects, path)
       
       # If upstream commit, merge upstream
-      if args.first == '<'
-        Merge.upstream args[1..-1]
+      if args.first == '^'
+        Merge.upstream *args[1..-1].unshift(name) and return
       
       # If template specified, update config
       elsif args.first
