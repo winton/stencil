@@ -28,10 +28,10 @@ class Stencil
         end
       end
       
-      def template(path)
+      def template(path, push)
         Branches.grouped(path).each do |branches|
           branches.unshift('master')
-          progressive(path, branches)
+          progressive(path, branches, push)
         end
         Cmd.run path, "git checkout master"
       end
@@ -85,16 +85,19 @@ class Stencil
         origin.match(/URL:\s+(\S+)/)[1]
       end
       
-      def progressive(path, branches)
+      def progressive(path, branches, push)
         merger = branches.shift
         mergee = branches.first
         if merger && mergee
-          Msg.merging_x_into_y merger, mergee
-          output = Cmd.run path, "git checkout #{mergee}"
-          Msg.error(output) if output.downcase.include?('error')
-          output = Cmd.run path, "git merge #{merger}"
-          Msg.error(output) if output.downcase.include?('conflict')
-          progressive(path, branches)
+          unless merger.empty? || mergee.empty?
+            output = Cmd.run path, "git checkout #{mergee}"
+            Msg.error(output) if output.downcase.include?('error')
+            Msg.merging_x_into_y merger, mergee
+            output = Cmd.run path, "git merge #{merger}"
+            Msg.error(output) if output.downcase.include?('conflict')
+            Cmd.run(path, "git push origin #{mergee}") if push
+          end
+          progressive(path, branches, push)
         end
       end
     end

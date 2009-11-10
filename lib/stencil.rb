@@ -10,7 +10,7 @@ class Stencil
     
     # If template, do a template merge
     if Config.exists?(:templates, path)
-      Merge.template(path)
+      Merge.template(path, args.include?('push'))
     
     # If project
     elsif Config.exists?(:projects, path)
