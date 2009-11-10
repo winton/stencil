@@ -13,6 +13,13 @@ class Stencil
         exit
       end
       
+      def error_specify_template
+        space
+        puts "Please tell stencil what template you want to receive updates from:"
+        puts "  stencil TEMPLATE [BRANCH BRANCH ...]"
+        exit
+      end
+      
       def is_template_or_project?(name)
         space
         puts "Is \"#{name}\" a template or a project?"
@@ -23,6 +30,10 @@ class Stencil
         puts "Merging remote branch \"#{branch}\""
       end
       
+      def merging_x_into_y(x, y)
+        puts "Merging \"#{x}\" into \"#{y}\""
+      end
+      
       def project_url(url)
         space
         puts "Found project URL: #{url}"
@@ -30,12 +41,6 @@ class Stencil
       
       def space
         puts ''
-      end
-      
-      def specify_template
-        space
-        puts "Please tell stencil what template you want to receive updates from:"
-        puts "  stencil TEMPLATE [BRANCH BRANCH ...]"
       end
       
       def template_not_found(template)

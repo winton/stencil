@@ -5,23 +5,26 @@ class Stencil
       def project(name, path)
         template = Config.read[:projects][name][:template]
         branches = Config.read[:projects][name][:branches]
-        if template
-          template = Config.read[:templates][template.intern]
-          if template && File.exists?(template[:path])
-            origin = get_origin template[:path]
-            Msg.template_url origin
-            add_remote 'template', path, origin
-            branches = %w(master) if branches.empty?
-            branches.each do |branch|
-              Msg.merge_remote_branch branch
-              Cmd.run path, "git pull template #{branch}"
-            end
-          else
-            Msg.template_not_found template
-            Msg.specify_template
+        Msg.error_specify_template unless template
+        template = Config.read[:templates][template.intern]
+        if template && File.exists?(template[:path])
+          
+          # Add remote template to project
+          origin = get_origin template[:path]
+          Msg.template_url origin
+          add_remote 'template', path, origin
+          
+          # Pull template into master if no branches specified
+          branches = %w(master) if branches.empty?
+          
+          # Pull template into each branch
+          branches.each do |branch|
+            Msg.merge_remote_branch branch
+            Cmd.run path, "git pull template #{branch}"
           end
         else
-          Msg.specify_template
+          Msg.template_not_found template
+          Msg.error_specify_template
         end
       end
       
@@ -33,20 +36,32 @@ class Stencil
         Cmd.run path, "git checkout master"
       end
       
-      def upstream(name, commit, branches=[])
+      def upstream(name, commit=nil, branches=[])
+        # Project variables
         project = Config.read[:projects][name]
         branch = Cmd.run(project[:path], "git branch").split
         branch = branch[branch.index('*') + 1]
         
+        # Template variables
         template = Config.read[:templates][project[:template].intern]
         path = template[:path]
         
+        # Add remote project to template and fetch
         origin = get_origin project[:path]
         Msg.project_url origin
         add_remote 'project', path, origin
         Cmd.run path, "git fetch project"
         
+        # Get last commit if none specified
+        unless commit
+          cmd = "git log HEAD~1..HEAD --pretty=format:'%H'"
+          commit = Cmd.run(template[:path], cmd).strip
+        end
+        
+        # Cherry pick into master if no branches specified
         branches = %w(master) if branches.empty?
+        
+        # Cherry pick commit into branches
         branches.each do |branch|
           output = Cmd.run path, "git checkout #{branch}"
           Msg.error(output) if output.downcase.include?('error')
@@ -74,7 +89,7 @@ class Stencil
         merger = branches.shift
         mergee = branches.first
         if merger && mergee
-          puts "Merging \"#{merger}\" into \"#{mergee}\""
+          Msg.merging_x_into_y merger, mergee
           output = Cmd.run path, "git checkout #{mergee}"
           Msg.error(output) if output.downcase.include?('error')
           output = Cmd.run path, "git merge #{merger}"
