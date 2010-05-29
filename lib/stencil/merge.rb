@@ -36,11 +36,10 @@ class Stencil
         Cmd.run path, "git checkout master"
       end
       
-      def upstream(name, commit=nil, branches=[])
+      def upstream(name, commit=nil, *branches)
         # Project variables
         project = Config.read[:projects][name]
-        branch = Cmd.run(project[:path], "git branch").split
-        branch = branch[branch.index('*') + 1]
+        branches = project[:branches] if branches.empty?
         
         # Template variables
         template = Config.read[:templates][project[:template].intern]
@@ -57,9 +56,6 @@ class Stencil
           cmd = "git log HEAD~1..HEAD --pretty=format:'%H'"
           commit = Cmd.run(template[:path], cmd).strip
         end
-        
-        # Cherry pick into master if no branches specified
-        branches = %w(master) if branches.empty?
         
         # Cherry pick commit into branches
         branches.each do |branch|
