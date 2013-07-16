@@ -1,6 +1,11 @@
-Dir["#{File.dirname(__FILE__)}/stencil/*.rb"].each do |path|
-  require path
-end
+$:.unshift File.dirname(__FILE__)
+
+require 'stencil/branches'
+require 'stencil/cmd'
+require 'stencil/config'
+require 'stencil/hash'
+require 'stencil/merge'
+require 'stencil/msg'
 
 class Stencil
   

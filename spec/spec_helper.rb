@@ -1,5 +1,7 @@
-require File.expand_path("#{File.dirname(__FILE__)}/../require")
-Require.spec_helper!
-
-Spec::Runner.configure do |config|
+unless ENV['CI']
+  require 'simplecov'
+  SimpleCov.start
 end
+
+$root = File.expand_path('../../', __FILE__)
+require "#{$root}/lib/stencil"
