@@ -20,7 +20,8 @@ class Stencil
           Cmd.run(path, "git pull origin #{merger}")
         end
 
-        mergees.each do |mergee, mergee_mergees|
+        mergees = mergees.sort_by { |k, v| k }
+        mergees.each do |(mergee, mergee_mergees)|
           mergee = "#{merger}-#{mergee}" unless merger == 'master'
           Cmd.run(path, "git checkout #{mergee}")
           Cmd.run(path, "git merge #{merger}")

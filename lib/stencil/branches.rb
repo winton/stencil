@@ -14,8 +14,8 @@ class Stencil
       
       def grouped(path)
         branches = read(path).inject({}) do |hash, branch|
-          branch.split('-').inject(hash) do |hash, branch|
-            hash[branch] ||= {}
+          branch.split('-').inject(hash) do |h, b|
+            h[b] ||= {}
           end
           hash
         end
