@@ -6,29 +6,20 @@ class Stencil
       
       def read(path)
         branches = Cmd.run path, 'git branch'
-        branches = branches.split(/\s+/)
-        branches.delete '*'
+        branches = branches.split(/[\s\*]+/)
         branches.delete 'master'
-        branches
+        branches.delete ''
+        branches.sort
       end
       
       def grouped(path)
-        groups, ignore = [], []
-        branches = read(path).sort { |a, b| a.length <=> b.length }
-        branches.each do |branch|
-          next if ignore.include?(branch)
-          groups << [ branch ] + group(branches, branch)
-          ignore += groups.last
+        branches = read(path).inject({}) do |hash, branch|
+          branch.split('-').inject(hash) do |hash, branch|
+            hash[branch] ||= {}
+          end
+          hash
         end
-        groups
-      end
-      
-      private
-      
-      def group(branches, branch)
-        branches.select do |b|
-          b != branch && b[0..branch.length-1] == branch
-        end
+        { 'master' => branches }
       end
     end
   end
