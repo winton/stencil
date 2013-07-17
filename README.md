@@ -2,6 +2,8 @@
 
 Project template manager.
 
+[![Build Status](https://secure.travis-ci.org/winton/stencil.png)](http://travis-ci.org/winton/stencil)
+
 ### Contribute
 
 [Create an issue](https://github.com/winton/stencil/issues/new) to discuss template changes.
