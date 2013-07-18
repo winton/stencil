@@ -8,7 +8,14 @@ class Stencil
         else
           path = "cd #{path} && "
         end
-        `#{[ path, cmd ].compact.join}`
+        
+        output = `#{[ path, cmd ].compact.join} 2>&1`
+
+        unless $?.success?
+          Msg.error "there was a problem\n\nCommand: #{cmd}\n\nOutput:\n#{output}"
+        end
+
+        output
       end
     end
   end

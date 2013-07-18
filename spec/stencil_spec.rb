@@ -94,6 +94,30 @@ describe Stencil do
       Stencil.new([ "push" ])
       # TODO: check merge happened
     end
+
+    it "should exit on merge conflict" do
+      @cmds[0..@cmds.index("git push origin a")-1].each do |cmd|
+        if cmd.include?('push') || cmd.include?('pull')
+          Stencil::Cmd.should_receive(:run).with(@fixture, cmd).ordered
+        else
+          Stencil::Cmd.should_receive(:run).with(@fixture, cmd).ordered.and_call_original
+        end
+      end
+
+      `git checkout master`
+      File.open("#{@fixture}/master.txt", 'w') do |f|
+        f.write("conflict")
+      end
+      `git commit -a -m "master conflict"`
+
+      `git checkout a`
+      File.open("#{@fixture}/master.txt", 'w') do |f|
+        f.write("conflict2")
+      end
+      `git commit -a -m "a conflict"`
+
+      lambda { Stencil.new([ "push" ]) }.should raise_error SystemExit
+    end
   end
 
   describe Stencil::Branches do

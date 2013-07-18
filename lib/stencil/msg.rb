@@ -4,7 +4,7 @@ class Stencil
       
       def error(output)
         space
-        puts "Oops:\n#{output}"
+        puts "Oops: #{output}"
         exit
       end
 
