@@ -123,7 +123,7 @@ describe Stencil do
 
   describe Stencil::Branches do
     it "should return branch names" do
-      Stencil::Branches.read(@fixture).should == @branches
+      Stencil::Branches.read(@fixture).should == @branches + [ 'master' ]
     end
 
     it "should return grouped branch names" do

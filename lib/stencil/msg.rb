@@ -8,10 +8,6 @@ class Stencil
         exit
       end
 
-      def merging_x_into_y(x, y)
-        puts "Merging \"#{x}\" into \"#{y}\""
-      end
-
       def space
         puts ''
       end

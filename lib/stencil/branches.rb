@@ -19,7 +19,6 @@ class Stencil
         elsif !@@branches[key]
           branches = Cmd.run path, 'git branch'
           branches = branches.split(/[\s\*]+/)
-          branches.delete 'master'
           branches.delete ''
           branches.sort!
           @@branches[key] = branches
@@ -29,7 +28,7 @@ class Stencil
       end
       
       def grouped(path)
-        branches = read(path).inject({}) do |hash, branch|
+        branches = (read(path) - [ 'master' ]).inject({}) do |hash, branch|
           branch.split('-').inject(hash) do |h, b|
             h[b] ||= {}
           end

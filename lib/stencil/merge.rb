@@ -15,7 +15,7 @@ class Stencil
       private
 
       def checkout(path, branch)
-        locals  = Branches.read(path, :local) + [ 'master' ]
+        locals  = Branches.read(path, :local)
         remotes = Branches.read(path, :remote)
 
         if locals.include?(branch)
@@ -27,7 +27,7 @@ class Stencil
       
       def progressive_merge(path, merger, mergees, push)
         branches = Branches.read(path)
-        return unless branches.include?(merger) || merger == 'master'
+        return unless branches.include?(merger)
 
         unless mergees.empty?
           checkout(path, merger)
