@@ -35,13 +35,14 @@ describe Stencil do
       `git add .`
       `git commit -m "#{branch}"`
     end
+
+    Stencil::Branches.read(@fixture) # warm up @@branches cache
   end
 
   describe :initialize do
     before :all do
       @cmds = [
         "git fetch --all",
-        "git branch",
         "git checkout master",
         "git pull origin master",
         "git checkout a",

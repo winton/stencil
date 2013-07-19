@@ -12,7 +12,7 @@ class Stencil
         output = `#{[ path, cmd ].compact.join} 2>&1`
 
         unless $?.success?
-          Msg.error "there was a problem\n\nCommand: #{cmd}\n\nOutput:\n#{output}"
+          Msg.error "#{cmd}\n\n#{output}"
         end
 
         output
