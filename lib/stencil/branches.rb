@@ -13,7 +13,7 @@ class Stencil
           (read(path, :remote) + read(path, :local)).uniq
         elsif type == :remote && !@@branches[key]
           branches = Cmd.run path, 'git branch -a'
-          @@branches[key] = branches.scan(/origin\/[\w-]+/)
+          @@branches[key] = branches.scan(/origin\/([\w-]+\b$)/).flatten.uniq
         elsif type == :remote
           @@branches[key]
         elsif !@@branches[key]
